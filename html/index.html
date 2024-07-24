@@ -1,22 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script defer src="/js/main.js"></script>
-  <title>Entregable1 - Aurelio Lucas</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script defer src="../js/main.js"></script>
+  <title>Aurelio's - Tienda Online</title>
+  <meta name="description" content="Con la nueva Tienda Online Oficial de Aurelio's comprá en un solo click. ">
+  <meta name="keywords"
+    content="rutina Anti-Aging, protector solar, cremas faciales, cremas corporales, aceites para el cabello, cremas">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-6P7Z8E6ovZT5cg4PbLBYdo9Fi2bH6iz2uePmgE9/9D2MbZm27Nf3KrD2A0QXJ4zL" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 
 <body>
+  <main>
+    <h2 class="bestseller-title">Productos</h2>
+    <section id="best-seller" class="section-bestseller row">
+      <!-- Los artículos se llenarán dinámicamente desde JavaScript -->
+    </section>
 
+    <section id="carrito" class="mt-5">
+      <h2>Tu Carrito</h2>
+      <div id="carrito-detalle"></div>
+    </section>
+  </main>
+
+  <!-- Modal para el Carrito -->
+  <div class="modal fade" id="carritoModal" tabindex="-1" aria-labelledby="carritoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+        </div>
+        <div class="modal-body" id="carrito-body">
+          <!-- Los artículos del carrito se llenarán dinámicamente desde JavaScript -->
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para el Formulario de Compra -->
+  <div class="modal fade" id="compraModal" tabindex="-1" aria-labelledby="compraModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="compraModalLabel">Finalizar Compra</h3>
+        </div>
+        <div class="modal-body" id="form-compra-container">
+          <!-- El formulario está oculto inicialmente -->
+          <form id="form-compra" class="d-none">
+            <div class="mb-3">
+              <label for="nombreCompleto" class="form-label">Nombre Completo</label>
+              <input type="text" class="form-control" id="nombreCompleto" required>
+            </div>
+            <div class="mb-3">
+              <label for="dni" class="form-label">DNI</label>
+              <input type="text" class="form-control" id="dni" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Finalizar Compra</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS y dependencias -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz4fnFO9l9Sc7rA0X3Pb8dJ0cbkS2V4BxKZn4hlmo2B8kQ5T5Tz58FzM08"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-4a1L6r2elqGrVx4ZqZJo4SHz5AuNmM4ZjtUs1euJddKbSoTx9M7lWCB9zXJXjt3S"
+    crossorigin="anonymous"></script>
 </body>
-<h1> Entregable1 - Aurelio Lucas </h1>
-
-<h2>En esta entrega se busca primero solicitarle el nombre al usuario para dar un saludo de bienvenida, y luego
-  presentar un menu de opciones de velas con sus respectivos precios a traves de un array, tambien las funciones de
-  agregar y visualizar el
-  carrito con la suma total de los productos, una opción de proceder con la compra y por default una opcion de salir del
-  menú.</h2>
 
 </html>

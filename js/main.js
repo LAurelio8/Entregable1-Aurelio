@@ -1,107 +1,163 @@
 // Lista de productos
-const velas = [
-  { id: 1, nombre: "Vela de Lavanda", precio: 10 },
-  { id: 2, nombre: "Vela de Vainilla", precio: 12 },
-  { id: 3, nombre: "Vela de Canela", precio: 8 },
-  { id: 4, nombre: "Vela de Jazmín", precio: 15 },
+const productos = [
+  { id: 1, nombre: "Calendula Deep Cleansing Foaming Face Wash", precio: 24.0 },
+  { id: 2, nombre: "Midnight Recovery Concentrate", precio: 32.0 },
+  { id: 3, nombre: "Skin Rescuer", precio: 18.99 },
+  {
+    id: 4,
+    nombre: "Cilantro & Orange Extract Pollulant Defending Mask",
+    precio: 52.0,
+  },
 ];
-
-// Función para agregar productos al carrito
-function agregarAlCarrito(carrito, productoId, cantidad) {
-  const producto = velas.find((v) => v.id === productoId);
-  if (producto) {
-    for (let i = 0; i < cantidad; i++) {
-      carrito.push(producto);
-    }
-    alert(`${cantidad} ${producto.nombre} agregado(s) al carrito.`);
-  } else {
-    alert("Producto no encontrado.");
-  }
-}
-
-// Función para calcular el precio total
-function calcularPrecioTotal(carrito) {
-  let total = 0;
-  for (let i = 0; i < carrito.length; i++) {
-    total += carrito[i].precio;
-  }
-  return total;
-}
-
-// Función para mostrar el contenido actual del carrito
-function mostrarCarrito(carrito) {
-  let carritoDetalle = "Carrito de compras:\n";
-  if (carrito.length === 0) {
-    carritoDetalle += "Tu carrito está vacío.\n";
-  } else {
-    for (let i = 0; i < carrito.length; i++) {
-      carritoDetalle += `${i + 1}. ${carrito[i].nombre} - $${
-        carrito[i].precio
-      }\n`;
-    }
-    carritoDetalle += `Total: $${calcularPrecioTotal(carrito)}`;
-  }
-  alert(carritoDetalle);
-}
-
-// Preguntar el nombre del usuario
-const nombreUsuario = prompt("Por favor, ingresa tu nombre:");
-alert(`¡Bienvenido/a, ${nombreUsuario}!`);
 
 // Inicializar el carrito
 let carrito = [];
-let continuar = true;
 
-while (continuar) {
-  // Mostrar lista de velas disponibles
-  let listaProductos = "Velas disponibles:\n";
-  for (let i = 0; i < velas.length; i++) {
-    listaProductos += `${velas[i].id}. ${velas[i].nombre} - $${velas[i].precio}\n`;
+// Cargar carrito desde localStorage si existe
+document.addEventListener("DOMContentLoaded", () => {
+  const savedCart = localStorage.getItem("carrito");
+  if (savedCart) {
+    carrito = JSON.parse(savedCart);
   }
-  listaProductos += "5. Ver carrito\n6. Continuar al siguiente paso\n7. Salir";
+  mostrarProductos();
+  mostrarCarrito();
+});
 
-  // Preguntar la selección de producto
-  const seleccion = parseInt(prompt(listaProductos), 10);
+// Función para guardar el carrito en localStorage
+const guardarCarrito = () => {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+};
 
-  if (seleccion >= 1 && seleccion <= 4) {
-    // Preguntar cantidad de productos
-    const cantidad = parseInt(
-      prompt("¿Cuántas velas deseas agregar al carrito?"),
-      10
-    );
-    agregarAlCarrito(carrito, seleccion, cantidad);
-  } else if (seleccion === 5) {
-    // Mostrar carrito y total
-    mostrarCarrito(carrito);
-  } else if (seleccion === 6) {
-    if (carrito.length === 0) {
-      alert("Por favor, seleccione un producto para continuar con la compra.");
+// Función para agregar productos al carrito
+const agregarAlCarrito = (productoId) => {
+  const producto = productos.find((p) => p.id === productoId);
+  if (producto) {
+    const itemEnCarrito = carrito.find((item) => item.id === productoId);
+    if (itemEnCarrito) {
+      itemEnCarrito.cantidad++;
     } else {
-      // Preguntar si desea finalizar la compra
-      const continuarCompra = prompt(
-        "¿Deseas continuar con la compra? (si/no)"
-      ).toLowerCase();
-
-      if (continuarCompra === "si") {
-        // Solicitar mail y documento
-        const email = prompt("Por favor, ingresa tu correo electrónico:");
-        const documento = prompt(
-          "Por favor, ingresa tu documento de identidad:"
-        );
-        alert(
-          `Gracias por tu compra, ${nombreUsuario}. Recibirás un correo de confirmación en ${email}.`
-        );
-        continuar = false;
-      } else {
-        alert("Gracias por visitar nuestra tienda.");
-        continuar = false;
-      }
+      carrito.push({ ...producto, cantidad: 1 });
     }
-  } else if (seleccion === 7) {
-    continuar = false;
-  } else {
-    alert("Opción no válida. Por favor, selecciona una opción válida.");
+    guardarCarrito();
+    mostrarCarrito();
+    const carritoModal = new bootstrap.Modal(
+      document.getElementById("carritoModal")
+    );
+    carritoModal.show();
   }
-}
+};
 
-alert("Gracias por visitar nuestra tienda.");
+// Función para calcular el precio total
+const calcularPrecioTotal = () => {
+  return carrito.reduce(
+    (total, producto) => total + producto.precio * producto.cantidad,
+    0
+  );
+};
+
+// Función para eliminar un producto del carrito
+const eliminarDelCarrito = (productoId) => {
+  carrito = carrito.filter((item) => item.id !== productoId);
+  guardarCarrito();
+  mostrarCarrito();
+};
+
+// Función para mostrar el contenido actual del carrito
+const mostrarCarrito = () => {
+  const carritoDetalle = document.querySelector("#carrito-detalle");
+  carritoDetalle.innerHTML = "";
+
+  if (carrito.length === 0) {
+    carritoDetalle.innerHTML = "<p>Tu carrito está vacío.</p>";
+  } else {
+    carrito.forEach((producto) => {
+      const item = document.createElement("div");
+      item.className = "carrito-item";
+      item.innerHTML = `
+        <p>${producto.nombre} - $${producto.precio.toFixed(2)} x ${
+        producto.cantidad
+      }
+        <button class="btn btn-danger btn-sm ms-2" data-producto-id="${
+          producto.id
+        }">Eliminar</button></p>
+      `;
+      carritoDetalle.appendChild(item);
+    });
+
+    const total = document.createElement("p");
+    total.className = "carrito-total";
+    total.textContent = `Total: $${calcularPrecioTotal().toFixed(2)}`;
+    carritoDetalle.appendChild(total);
+
+    document.querySelectorAll(".btn-danger").forEach((button) => {
+      button.addEventListener("click", () => {
+        const productoId = parseInt(button.dataset.productoId, 10);
+        eliminarDelCarrito(productoId);
+      });
+    });
+  }
+};
+
+// Función para manejar el evento de clic en los botones de "Agregar al Carrito"
+const manejarAgregarAlCarrito = (event) => {
+  const button = event.target;
+  const productoId = parseInt(button.dataset.productoId, 10);
+  agregarAlCarrito(productoId);
+};
+
+// Mostrar lista de productos disponibles
+const mostrarProductos = () => {
+  const section = document.querySelector("#best-seller");
+  productos.forEach((producto) => {
+    const item = document.createElement("article");
+    item.className = "col-12 col-sm-6 col-md-6 col-lg-3";
+    item.innerHTML = `
+      <h3>${producto.nombre}</h3>
+      <h4>$${producto.precio.toFixed(2)}</h4>
+      <button class="btn-bestseller" data-producto-id="${
+        producto.id
+      }">Agregar al Carrito</button>
+    `;
+    section.appendChild(item);
+  });
+
+  document.querySelectorAll(".btn-bestseller").forEach((button) => {
+    button.addEventListener("click", manejarAgregarAlCarrito);
+  });
+};
+
+// Función para manejar el formulario de compra
+document.getElementById("form-compra").addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  // Vaciar el carrito y actualizar la vista
+  carrito = [];
+  guardarCarrito();
+  mostrarCarrito();
+
+  // Mostrar mensaje de agradecimiento
+  const mensajeAgradecimiento = document.createElement("div");
+  mensajeAgradecimiento.innerHTML = `
+    <div class="alert alert-success mt-3" role="alert">
+      ¡Gracias por tu compra! Tu pedido ha sido procesado correctamente.
+    </div>
+  `;
+  const formCompraContainer = document.getElementById("form-compra-container");
+  formCompraContainer.appendChild(mensajeAgradecimiento);
+
+  // Cerrar el formulario de compra
+  const compraModal = bootstrap.Modal.getInstance(
+    document.getElementById("compraModal")
+  );
+  compraModal.hide();
+});
+
+// Bootstrap JS y dependencias
+document.addEventListener("DOMContentLoaded", () => {
+  const bootstrapModal = new bootstrap.Modal(
+    document.getElementById("carritoModal")
+  );
+  const bootstrapCompraModal = new bootstrap.Modal(
+    document.getElementById("compraModal")
+  );
+});
